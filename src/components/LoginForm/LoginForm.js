@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -8,8 +8,24 @@ import { toast } from "react-toastify";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+
+  //backbuttonHandling
+  useEffect(() => {
+    const handleBackButton = (event) => {
+      event.preventDefault();
+      navigate("/");
+    };
+
+    window.history.pushState(null, null, window.location.pathname);
+    window.addEventListener("popstate", handleBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, [navigate]);
+
   const validationSchema = yup.object().shape({
-    email: yup.string().email("Invalid email").required("Email is required"),
+    name: yup.string().required("Name is required"),
     password: yup.string().required("Password is required"),
   });
 
@@ -24,14 +40,26 @@ const LoginForm = () => {
   const onSubmit = (data) => {
     if (!data) return;
 
+    if (data?.name === "admin" && data?.password === "admin") {
+      navigate("/admin-home");
+      toast.success("SuccessFully logged in ", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        theme: "dark",
+      });
+      return;
+    }
     // Retrieve existing users from local storage
     const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
 
     // Check if the email already exists in the array
-    const emailExists = storedUsers.some((user) => user.email === data?.email);
+    const userNameExists = storedUsers.some((user) => user.name === data?.name);
 
-    if (!emailExists) {
-      toast.error("Incorrect email ", {
+    if (!userNameExists) {
+      toast.error("Incorrect user name ", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -42,11 +70,11 @@ const LoginForm = () => {
       return;
     } else {
       let userDetails = storedUsers.find(
-        (element) => element?.email === data?.email
+        (element) => element?.name === data?.name
       );
 
       if (userDetails.password === data?.password) {
-        navigate("/");
+        navigate(`/user-home`);
         toast.success("SuccessFully logged in ", {
           position: "top-center",
           autoClose: 5000,
@@ -81,22 +109,22 @@ const LoginForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
           <label
-            htmlFor="email"
+            htmlFor="name"
             className="block text-gray-700 font-medium mb-2"
           >
-            Email
+            User name
           </label>
           <input
-            type="email"
-            id="email"
+            type="text"
+            id="name"
             className={`border ${
-              errors.email ? "border-red-500" : "border-gray-400"
+              errors.name ? "border-red-500" : "border-gray-400"
             } rounded px-3 py-2 w-full focus:outline-none focus:border-blue-500`}
-            placeholder="Enter your email"
-            {...register("email")}
+            placeholder="Enter your name"
+            {...register("name")}
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
           )}
         </div>
         <div className="mb-6">

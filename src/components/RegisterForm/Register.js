@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -8,6 +8,21 @@ import { toast } from "react-toastify";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
+
+  //backbuttonHandling
+  useEffect(() => {
+    const handleBackButton = (event) => {
+      event.preventDefault();
+      navigate("/");
+    };
+
+    window.history.pushState(null, null, window.location.pathname);
+    window.addEventListener("popstate", handleBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, [navigate]);
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -61,6 +76,7 @@ const RegistrationForm = () => {
       storedUsers.push(newUser);
       // Save the updated array back to local storage
       localStorage.setItem("users", JSON.stringify(storedUsers));
+      navigate("/login");
       toast.success("Registration completed successfully Please login", {
         position: "top-center",
         autoClose: 5000,
@@ -90,7 +106,7 @@ const RegistrationForm = () => {
             htmlFor="name"
             className="block text-gray-700 font-medium mb-2"
           >
-            Name
+            User Name
           </label>
           <input
             type="text"

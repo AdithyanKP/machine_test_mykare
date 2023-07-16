@@ -5,6 +5,7 @@ import AdminHomePage from "./components/AdminHomePage/AdminHomePage";
 import RegistrationForm from "./components/RegisterForm/Register";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import UserWelcome from "./components/UserWelcomePage/UserWelcome";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/admin-home" element={<AdminHomePage />} />
+        <Route path="/user-home" element={<UserWelcome />} />
       </Routes>
       <ToastContainer />
     </div>
