@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -21,7 +22,50 @@ const LoginForm = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    if (!data) return;
+
+    // Retrieve existing users from local storage
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    // Check if the email already exists in the array
+    const emailExists = storedUsers.some((user) => user.email === data?.email);
+
+    if (!emailExists) {
+      toast.error("Incorrect email ", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        theme: "dark",
+      });
+      return;
+    } else {
+      let userDetails = storedUsers.find(
+        (element) => element?.email === data?.email
+      );
+
+      if (userDetails.password === data?.password) {
+        navigate("/");
+        toast.success("SuccessFully logged in ", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "dark",
+        });
+      } else {
+        toast.error("Incorrect password ", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "dark",
+        });
+      }
+    }
   };
 
   const registerHandle = () => {
@@ -77,7 +121,7 @@ const LoginForm = () => {
         </div>
         <div className="flex md:flex-row flex-col">
           <div className="m-2">
-            <Button type="submit" title="Submit" />
+            <Button type="submit" title="Submit" onClick={handleSubmit} />
           </div>
           <div className="m-2">
             <Button title="Register" onClick={registerHandle} />

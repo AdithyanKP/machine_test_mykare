@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
@@ -21,16 +22,63 @@ const RegistrationForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
   const onSubmit = (data) => {
     console.log(data);
+
+    const newUser = {
+      name: data?.name,
+      email: data?.email,
+      password: data?.password,
+    };
+
+    // Add the new user to the array
+    if (newUser?.name && newUser?.email && newUser?.password) {
+      // Retrieve existing users from local storage
+      const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+      // Check if the email already exists in the array
+      const emailExists = storedUsers.some(
+        (user) => user.email === newUser?.email
+      );
+
+      if (emailExists) {
+        toast.error("This user already exists", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "dark",
+        });
+        return;
+      }
+
+      storedUsers.push(newUser);
+      // Save the updated array back to local storage
+      localStorage.setItem("users", JSON.stringify(storedUsers));
+      toast.success("Registration completed successfully Please login", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        theme: "dark",
+      });
+
+      reset();
+    }
   };
 
   const backToHomeHandle = () => {
     navigate("/");
+  };
+  const loginHandle = () => {
+    navigate("/login");
   };
 
   return (
@@ -99,7 +147,10 @@ const RegistrationForm = () => {
         </div>
         <div className="flex flex-row">
           <div className="m-2">
-            <Button type="submit" title="Submit" />
+            <Button type="submit" title="Submit" onClick={onSubmit} />
+          </div>
+          <div className="m-2">
+            <Button title="Login" onClick={loginHandle} />
           </div>
           <div className="m-2">
             <Button title="Back to Home" onClick={backToHomeHandle} />

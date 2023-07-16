@@ -3,6 +3,8 @@ import HomePage from "./components/HomePage/HomePage";
 import LoginForm from "./components/LoginForm/LoginForm";
 import AdminHomePage from "./components/AdminHomePage/AdminHomePage";
 import RegistrationForm from "./components/RegisterForm/Register";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -13,6 +15,7 @@ function App() {
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/admin-home" element={<AdminHomePage />} />
       </Routes>
+      <ToastContainer />
     </div>
   );
 }
