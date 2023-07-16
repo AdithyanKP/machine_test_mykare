@@ -52,7 +52,7 @@ const LoginForm = () => {
       // Retrieve existing users from local storage
       const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-      // Check if the email already exists in the array
+      // Check if the username already exists in the array
       const userNameExists = storedUsers.some(
         (user) => user.name === data?.name
       );

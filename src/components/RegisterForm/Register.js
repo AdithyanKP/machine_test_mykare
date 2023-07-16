@@ -44,8 +44,6 @@ const RegistrationForm = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
-
     const newUser = {
       name: data?.name,
       email: data?.email,

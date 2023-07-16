@@ -38,10 +38,11 @@ const AdminHomePage = () => {
   const onBackButtonClick = () => {
     navigate("/");
   };
+
   const onLogoutButtonClick = () => {
     localStorage.removeItem("admin");
     navigate("/");
-    toast.success("SuccessFully logout ", toastOptions);
+    toast.success("SuccessFully logged out ", toastOptions);
   };
 
   return (
