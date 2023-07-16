@@ -5,6 +5,7 @@ import * as yup from "yup";
 import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { toastOptions } from "../../utils";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -41,57 +42,35 @@ const LoginForm = () => {
     if (!data) return;
 
     if (data?.name === "admin" && data?.password === "admin") {
+      //saving admin logedIn token
+      localStorage.setItem("admin", true);
       navigate("/admin-home");
-      toast.success("SuccessFully logged in ", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        theme: "dark",
-      });
-      return;
-    }
-    // Retrieve existing users from local storage
-    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+      toast.success("SuccessFully logged in ", toastOptions);
 
-    // Check if the email already exists in the array
-    const userNameExists = storedUsers.some((user) => user.name === data?.name);
-
-    if (!userNameExists) {
-      toast.error("Incorrect user name ", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        theme: "dark",
-      });
       return;
     } else {
-      let userDetails = storedUsers.find(
-        (element) => element?.name === data?.name
+      // Retrieve existing users from local storage
+      const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+      // Check if the email already exists in the array
+      const userNameExists = storedUsers.some(
+        (user) => user.name === data?.name
       );
 
-      if (userDetails.password === data?.password) {
-        navigate(`/user-home`);
-        toast.success("SuccessFully logged in ", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          theme: "dark",
-        });
+      if (!userNameExists) {
+        toast.error("Incorrect user name ", toastOptions);
+        return;
       } else {
-        toast.error("Incorrect password ", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          theme: "dark",
-        });
+        let userDetails = storedUsers.find(
+          (element) => element?.name === data?.name
+        );
+
+        if (userDetails.password === data?.password) {
+          navigate(`/user-home`);
+          toast.success("SuccessFully logged in ", toastOptions);
+        } else {
+          toast.error("Incorrect password ", toastOptions);
+        }
       }
     }
   };
@@ -99,6 +78,7 @@ const LoginForm = () => {
   const registerHandle = () => {
     navigate("/register");
   };
+
   const backToHomeHandle = () => {
     navigate("/");
   };

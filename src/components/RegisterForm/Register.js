@@ -5,6 +5,7 @@ import * as yup from "yup";
 import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { toastOptions } from "../../utils";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
@@ -57,19 +58,22 @@ const RegistrationForm = () => {
       const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
 
       // Check if the email already exists in the array
+      const nameExists = storedUsers.some(
+        (user) => user.name === newUser?.name
+      );
+
+      if (nameExists) {
+        toast.error("This userName already exists", toastOptions);
+        return;
+      }
+
+      // Check if the email already exists in the array
       const emailExists = storedUsers.some(
         (user) => user.email === newUser?.email
       );
 
       if (emailExists) {
-        toast.error("This user already exists", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          theme: "dark",
-        });
+        toast.error("This email already exists", toastOptions);
         return;
       }
 
@@ -77,14 +81,10 @@ const RegistrationForm = () => {
       // Save the updated array back to local storage
       localStorage.setItem("users", JSON.stringify(storedUsers));
       navigate("/login");
-      toast.success("Registration completed successfully Please login", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        theme: "dark",
-      });
+      toast.success(
+        "Registration completed successfully Please login",
+        toastOptions
+      );
 
       reset();
     }
@@ -93,12 +93,13 @@ const RegistrationForm = () => {
   const backToHomeHandle = () => {
     navigate("/");
   };
+
   const loginHandle = () => {
     navigate("/login");
   };
 
   return (
-    <div className="mx-auto bg-white 0 p-6 shadow-md rounded md:w-[600px] h-[500px] mt-[180px] w-[360px] ">
+    <div className="mx-auto bg-white 0 p-6 shadow-md rounded md:w-[600px] h-[600px]  mt-[180px] md:h-[500px] w-[360px] ">
       <h2 className="text-2xl font-bold mb-6">Registration</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
@@ -161,7 +162,7 @@ const RegistrationForm = () => {
             <p className="text-red-500 text-sm">{errors.password.message}</p>
           )}
         </div>
-        <div className="flex flex-row">
+        <div className="flex md:flex-row flex-col">
           <div className="m-2">
             <Button type="submit" title="Submit" onClick={onSubmit} />
           </div>
