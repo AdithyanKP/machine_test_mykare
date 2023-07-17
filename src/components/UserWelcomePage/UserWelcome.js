@@ -28,7 +28,11 @@ const UserWelcome = () => {
         <Button title="Logout" onClick={logoutHandler} />
       </div>
       <div className="flex justify-center mt-[100px]">
-        <p className="text-[30px] text-[green] font-semibold ">Welcome</p>
+        <p className="text-[30px] text-[green] font-semibold ">
+          Welcome To Mykare .<br /> We're excited to have you as part of our
+          community. Our web app is dedicated to helping you manage your health
+          and well-being effectively and conveniently
+        </p>
       </div>
     </div>
   );

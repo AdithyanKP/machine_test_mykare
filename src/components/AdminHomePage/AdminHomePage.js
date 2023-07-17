@@ -5,17 +5,17 @@ import { toastOptions } from "../../utils";
 
 const AdminHomePage = () => {
   const navigate = useNavigate();
-  const [validAdmin, setvalidadmin] = useState(false);
+  const [validAdmin, setValidAdmin] = useState(false);
 
   //admin token validation
   useEffect(() => {
     const token = localStorage.getItem("admin");
     if (token) {
-      setvalidadmin(true);
+      setValidAdmin(true);
     } else {
-      setvalidadmin(false);
+      setValidAdmin(false);
     }
-  });
+  }, []);
 
   //backbuttonHandling
   useEffect(() => {
